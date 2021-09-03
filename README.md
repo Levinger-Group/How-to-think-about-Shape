@@ -3,7 +3,9 @@ Publicly available code supporting our paper, "How to Think About Shape".
 
 ## Contributors
 CG - Christopher Gale
+
 MD - Mortaza Derakshani
+
 NL - Nancy E. Levinger
 
 ## Organization
