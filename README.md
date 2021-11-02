@@ -1,5 +1,5 @@
 # How-to-think-about-Shape
-Publicly available code supporting our paper, "How to Characterize Amorphous Shapes: The Tale of a Reverse Micelle". The paper is currently available on ChemRxiv and under consideration for the Journal of Physical Chemistry B. 
+Publicly available code supporting our paper, "How to Characterize Amorphous Shapes: The Tale of a Reverse Micelle". The paper is currently available on ChemRxiv and under consideration for the Journal of Physical Chemistry B. Please cite the paper if you make use of these shape metrics (we will update the citation information as we move through the editorial process). 
 
 ## Contributors
 CG - Christopher Gale
