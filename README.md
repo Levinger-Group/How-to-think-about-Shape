@@ -4,7 +4,7 @@
 
 Publicly available code supporting our paper, "How to Characterize Amorphous Shapes: The Tale of a Reverse Micelle". The paper is currently available on ChemRxiv and submitted for publication in the Journal of Physical Chemistry B. Please cite the paper if you make use of these shape metrics.  
 
-Gale, C.D.; Derakhshani-Molayousefi, M.; Levinger, N.E.; How to Characterize Amorphous Shapes: The Tale of a Reverse Micelle. *ChemRxiv*,**2021**. This content is a preprint and has not been peer-reviewed. DOI: 10.33774/chemrxiv-2021-bx0wg
+Gale, C.D.; Derakhshani-Molayousefi, M.; Levinger, N.E.; How to Characterize Amorphous Shapes: The Tale of a Reverse Micelle. *ChemRxiv*, **2021**. This content is a preprint and has not been peer-reviewed. DOI: 10.33774/chemrxiv-2021-bx0wg
 
 ## Contributors
 CG - Christopher Gale
