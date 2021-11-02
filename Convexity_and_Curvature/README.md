@@ -4,4 +4,4 @@ Convexity and both mean and Gaussian curvature are both computed from the same W
 
 Currently, PyTim is required to run these analyses and does not function properly on Windows operating systems. We have used it and it works great on Linux systems and we would assume it works well on MacOS systems, although we haven't tested that either. 
 
-CG
+CG, 2021
