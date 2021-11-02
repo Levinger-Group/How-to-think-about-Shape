@@ -6,6 +6,6 @@ Currently, PyTim is required to run these analyses and does not function properl
 
 CG, 2021
 
-Sega, M.; Hantal, G.; Fabian, B.; Jedlovszky, P.; Pytim: a Python Package for the Interfacial Analysis of Molecular Simulations. *J. Comp. Chem.*, **2018**, *39*, 2118-2125.
+Sega, M.; Hantal, G.; Fabian, B.; Jedlovszky, P.; Pytim: a Python Package for the Interfacial Analysis of Molecular Simulations. *J. Comp. Chem.*, **2018**, *39*, 2118-2125. DOI: [10.1002/jcc.25384](https://doi.org/10.1002/jcc.25384)
 
-Willard, A.P.; Chandler, D.; Instantaneous Liquid Interfaces. *J. Phys. Chem. B*, **2010**, *114*, 1954-1958.
+Willard, A.P.; Chandler, D.; Instantaneous Liquid Interfaces. *J. Phys. Chem. B*, **2010**, *114*, 1954-1958. DOI: [10.1021/jp909219k](https://doi.org/10.1021/jp909219k)
