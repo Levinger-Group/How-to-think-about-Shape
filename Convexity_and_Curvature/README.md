@@ -5,3 +5,7 @@ Convexity and both mean and Gaussian curvature are both computed from the same W
 Currently, PyTim is required to run these analyses and does not function properly on Windows operating systems. We have used it and it works great on Linux systems and we would assume it works well on MacOS systems, although we haven't tested that either. 
 
 CG, 2021
+
+Sega, M.; Hantal, G.; Fabian, B.; Jedlovszky, P.; Pytim: a Python Package for the Interfacial Analysis of Molecular Simulations. *J. Comp. Chem.*, **2018**, *39*, 2118-2125.
+
+Willard, A.P.; Chandler, D.; Instantaneous Liquid Interfaces. *J. Phys. Chem. B*, **2010**, *114*, 1954-1958.
