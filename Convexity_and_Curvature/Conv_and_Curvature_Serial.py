@@ -3,7 +3,9 @@
 # COMPUTING CONVEXITY AND CURVATURE
 #
 # Here we compute the convexity estimator using the 3D extension of the area based method
-# I got the idea from the reference listed (although I believe it originated from a previous work)
+# I got the idea from the reference listed (although I believe it originated from a previous work).
+# In addition, we are computing the mean and Gaussian curvatures of the surface without abridgement.
+# See the corresponding jupyter notebook for potential ways to reduce the output file size.
 #
 # Zunic, J.; Rosin, P.L.; A Convexity Measurement for Polygons. In Proceedings of the British Machine
 # Vision Conference, Cardiff, UK, Sept 2-5, 2002; Rosin, P.L.; Marshall, A.D., Eds.; British Machine
