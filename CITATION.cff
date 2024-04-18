@@ -1,0 +1,30 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Shape Metrics
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: 'Christopher D. '
+    family-names: Gale
+    orcid: 'https://orcid.org/0000-0002-2661-484X'
+  - given-names: Mortaza
+    family-names: Derakhshani-Molayousefi
+    email: mderakhs@uark.edu
+  - given-names: Nancy E.
+    family-names: Levinger
+    email: nancy.levinger@colostate.edu
+    orcid: 'https://orcid.org/0000-0001-9624-4867'
+    affiliation: Colorado State University
+identifiers:
+  - type: doi
+    value: 10.1021/acs.jpcb.1c09439
+    description: Publication of the Shape Metric
+repository-code: 'https://github.com/Levinger-Group/How-to-think-about-Shape'
+url: 'https://github.com/Levinger-Group'
+license: MIT
+version: '1.0'
+date-released: '2021-11-02'
