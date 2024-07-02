@@ -1,0 +1,665 @@
+;------------------------------------------------------------------------------------------------
+; AOT using the OPLS-AA force field
+; 
+; Parameters for the sulfonate head group had to be modified from literature
+; For matching to atom lists, 3 new atoms had to be created:
+; opls_972 : the sulfur atom in sulfonate
+; opls_973 : the oxygen atoms in sulfonate
+; opls_974 : the carbon to which the sulfur is attached
+;
+; Sources:
+; 1. LJ parameters were taken from:
+; Rios-Lopez, Marlene; Mendez-Bermudez, Jose Guillermo; Dominguez, Hector; New
+; Force Field Parameters for the Sodium Dodecyl Sulfate and Alpha Olefin Sulfonate 
+; Anionic Surfactants. J. Phys. Chem. B., 122, 2018, 4558-4565.
+;
+; 2. Charge, equilibrium values and force constants for bonds, angles and dihedrals of sulfonate:
+; Lopes, Jose N. Conangia; Padua, Agilio A. H.; Shimizu, Karina; Molecular Force Field for Ionic
+; Liquids IV: Trialkylimidazolium and Alkoxycarbonyl-Imidazolium Cations; Alkylsulfonate and 
+; Alkylsulfate Anions, J. Phys. Chem. B., 112, 2018, 5039-5046.
+;
+; Charges not associated with the sulfonate group were taken directly from the ATB Gromos' itp file,
+; which was made using it's highest level quantum mechanical calculation. Details of that procedure are on
+; the ATB website, specifically on in the same spot that you find the molecule. 
+;
+; The rest of the atoms were simply given by standard OPLS-AA force field parameters, built with
+; the TPPmktop program from the ERG Research Group, http://erg.biophys.msu.ru/tpp/
+;
+; The itp file and compilation of these various sources was done by hand.
+;
+; Notes:
+; The dihedrals given in source 2 are actually Fourier dihedrals. It shouldn't matter but just of note.
+; There is an unrecognized dihedral due to the attached sulfonate that doesn't actually involve the sulfonate
+; This dihedral is entirely made of carbons, from the adjacent carbonyl carbon, including the sulfonate attached
+; carbon and then the next two carbons on the other side. I took the "standard" OPLS hydrocarbon dihedral for
+; this value. Improper dihedrals to keep the esters planar is automatically defined by OPLS via the function
+; "improper_O_C_X_Y". It should be taken care of. Since I have defined a new atom for the sulfonate attached
+; carbon, I had to manually pull the right values for the C-H stretch but they are identical to OPLS hydrocarbon
+; values.  
+;
+; The charges are a bit janky. Apparently the portion of the molecule not associated with the sulfonate
+; group has a net positive charge of 0.019 according to the ATB created charges. The charges for the
+; sulfonate group, including the attached carbon, have a net charge of -1 so they are essentially totally
+; transferable assuming that the attached chain is net neutral. Since there are 19 carbons in the molecule
+; if you ignore the attached carbon, then clearly they are the source of the problem. I have dropped their
+; charge by 0.001 to account for this. 
+;
+; In order to more effectively pack the molecules into reverse micelles, which prove to be enormously sensitive
+; to placement of the ions and Coulombic forces, I have decided to add the sodium explicitely in with the AOT.
+; The placement has been optimized using Avogadro's MM function with the GAFF force field. Based on results
+; from the first few frames of failed micelle packing, I know that the sodium tends to sit "coordinated" 
+; between the sulfonate group and the ester oxygen so that's where I placed it prior to optimizing. It stayed
+; relatively still during optimization. While this is admittedly not the best optimization, I think it's good
+; enough to serve the purpose. Optimization was stopped at approximately dE=1e-6.
+; Practically speaking, the sodium shows up in the itp and in the pdb but it
+; has no bonds, angles or dihedrals. So while GROMACS will show it as being part of the same molecule, it should
+; act totally independently in practice. Charge, mass and atom type were taken directly from the OPLS ions.itp file.
+; Also, in order to get the configuration to put the ester in the right place, the ethyl-hexyl chains had to be swept
+; back. This should be a net benefit for packing but is worth noting.
+;
+;-------------------------------------------------------------------------------------------------
+;
+;
+[ moleculetype ]
+; Name   nrexcl
+AOT     3
+[ atoms ]
+;  nr  type  resnr  resid  atom  cgnr  charge    mass
+    1 opls_140    1    AOT    H65    1    0.060   1.0080 ; [ HC]  alkane H.
+    2 opls_135    1    AOT    C24    2   -0.180  12.0110 ; [ CT]  alkane CH3 
+    3 opls_140    1    AOT    H63    3    0.060   1.0080 ; [ HC]  alkane H.
+    4 opls_140    1    AOT    H64    4    0.060   1.0080 ; [ HC]  alkane H.
+    5 opls_136    1    AOT    C23    5   -0.130  12.0110 ; [ CT]  alkane CH2 
+    6 opls_140    1    AOT    H61    6    0.060   1.0080 ; [ HC]  alkane H.
+    7 opls_140    1    AOT    H62    7    0.060   1.0080 ; [ HC]  alkane H.
+    8 opls_136    1    AOT    C22    8   -0.130  12.0110 ; [ CT]  alkane CH2 
+    9 opls_140    1    AOT    H59    9    0.060   1.0080 ; [ HC]  alkane H.
+   10 opls_140    1    AOT    H60   10    0.060   1.0080 ; [ HC]  alkane H.
+   11 opls_136    1    AOT    C21   11   -0.130  12.0110 ; [ CT]  alkane CH2 
+   12 opls_140    1    AOT    H57   12    0.060   1.0080 ; [ HC]  alkane H.
+   13 opls_140    1    AOT    H58   13    0.060   1.0080 ; [ HC]  alkane H.
+   14 opls_137    1    AOT    C18   14   -0.060  12.0110 ; [ CT]  alkane CH 
+   15 opls_140    1    AOT    H51   15    0.060   1.0080 ; [ HC]  alkane H.
+   16 opls_136    1    AOT    C19   16   -0.120  12.0110 ; [ CT]  alkane CH2 
+   17 opls_140    1    AOT    H52   17    0.060   1.0080 ; [ HC]  alkane H.
+   18 opls_140    1    AOT    H53   18    0.060   1.0080 ; [ HC]  alkane H.
+   19 opls_135    1    AOT    C20   19   -0.180  12.0110 ; [ CT]  alkane CH3 
+   20 opls_140    1    AOT    H54   20    0.060   1.0080 ; [ HC]  alkane H.
+   21 opls_140    1    AOT    H55   21    0.060   1.0080 ; [ HC]  alkane H.
+   22 opls_140    1    AOT    H56   22    0.060   1.0080 ; [ HC]  alkane H.
+   23 opls_490    1    AOT    C17   23    0.190  12.0110 ; [ CT]  C(H2OS) ethyl ester
+   24 opls_469    1    AOT    H49   24    0.030   1.0080 ; [ HC]  methoxy Hs in esters
+   25 opls_469    1    AOT    H50   25    0.030   1.0080 ; [ HC]  methoxy Hs in esters
+   26 opls_467    1    AOT    O16   26   -0.330  15.9994 ; [ OS]  AA -OR: ester 
+   27 opls_465    1    AOT    C14   27    0.510  12.0110 ; [C_2]  AA C:   esters - for R on C=O, use #280-#282
+   28 opls_466    1    AOT    O15   28   -0.430  15.9994 ; [O_2]  AA =O:  esters   
+   29 opls_974    1    AOT    C13   29   -0.140  12.0110 ; *** Sulfonate Attached carbon *** 
+   30 opls_140    1    AOT    H48   30    0.060   1.0080 ; [ HC]  alkane H.
+   31 opls_972    1    AOT    S25   31    1.180  32.0600 ; Sulfonate Sulfur
+   32 opls_973    1    AOT    O26   32   -0.680  15.9994 ; Sulfonate Oxygen
+   33 opls_973    1    AOT    O27   33   -0.680  15.9994 ; Sulfonate Oxygen
+   34 opls_973    1    AOT    O28   34   -0.680  15.9994 ; Sulfonate Oxygen
+   35 opls_136    1    AOT    C12   35   -0.120  12.0110 ; [ CT]  alkane CH2 
+   36 opls_140    1    AOT    H46   36    0.060   1.0080 ; [ HC]  alkane H.
+   37 opls_140    1    AOT    H47   37    0.060   1.0080 ; [ HC]  alkane H.
+   38 opls_465    1    AOT    C10   38    0.510  12.0110 ; [C_2]  AA C:   esters - for R on C=O, use #280-#282
+   39 opls_466    1    AOT    O11   39   -0.430  15.9994 ; [O_2]  AA =O:  esters   
+   40 opls_467    1    AOT     O9   40   -0.330  15.9994 ; [ OS]  AA -OR: ester 
+   41 opls_490    1    AOT     C8   41    0.190  12.0110 ; [ CT]  C(H2OS) ethyl ester
+   42 opls_469    1    AOT    H44   42    0.030   1.0080 ; [ HC]  methoxy Hs in esters
+   43 opls_469    1    AOT    H45   43    0.030   1.0080 ; [ HC]  methoxy Hs in esters
+   44 opls_137    1    AOT     C5   44   -0.060  12.0110 ; [ CT]  alkane CH 
+   45 opls_140    1    AOT    H38   45    0.060   1.0080 ; [ HC]  alkane H.
+   46 opls_136    1    AOT     C6   46   -0.120  12.0110 ; [ CT]  alkane CH2 
+   47 opls_140    1    AOT    H39   47    0.060   1.0080 ; [ HC]  alkane H.
+   48 opls_140    1    AOT    H40   48    0.060   1.0080 ; [ HC]  alkane H.
+   49 opls_135    1    AOT     C7   49   -0.180  12.0110 ; [ CT]  alkane CH3 
+   50 opls_140    1    AOT    H41   50    0.060   1.0080 ; [ HC]  alkane H.
+   51 opls_140    1    AOT    H42   51    0.060   1.0080 ; [ HC]  alkane H.
+   52 opls_140    1    AOT    H43   52    0.060   1.0080 ; [ HC]  alkane H.
+   53 opls_136    1    AOT     C4   53   -0.130  12.0110 ; [ CT]  alkane CH2 
+   54 opls_140    1    AOT    H36   54    0.060   1.0080 ; [ HC]  alkane H.
+   55 opls_140    1    AOT    H37   55    0.060   1.0080 ; [ HC]  alkane H.
+   56 opls_136    1    AOT     C3   56   -0.130  12.0110 ; [ CT]  alkane CH2 
+   57 opls_140    1    AOT    H34   57    0.060   1.0080 ; [ HC]  alkane H.
+   58 opls_140    1    AOT    H35   58    0.060   1.0080 ; [ HC]  alkane H.
+   59 opls_136    1    AOT     C2   59   -0.130  12.0110 ; [ CT]  alkane CH2 
+   60 opls_140    1    AOT    H32   60    0.060   1.0080 ; [ HC]  alkane H.
+   61 opls_140    1    AOT    H33   61    0.060   1.0080 ; [ HC]  alkane H.
+   62 opls_135    1    AOT     C1   62   -0.180  12.0110 ; [ CT]  alkane CH3 
+   63 opls_140    1    AOT    H29   63    0.060   1.0080 ; [ HC]  alkane H.
+   64 opls_140    1    AOT    H30   64    0.060   1.0080 ; [ HC]  alkane H.
+   65 opls_140    1    AOT    H31   65    0.060   1.0080 ; [ HC]  alkane H.
+   66 opls_407    1    AOT    NA1   66    1.000  22.9898 ; Associated Sodium
+; total charge of the molecule:   0.000
+;
+[ bonds ]
+  1   2   1
+  2   3   1
+  2   4   1
+  5   6   1
+  5   7   1
+  8   9   1
+  8  10   1
+ 11  12   1
+ 11  13   1
+ 14  15   1
+ 16  17   1
+ 16  18   1
+ 19  20   1
+ 19  21   1
+ 19  22   1
+ 23  24   1
+ 23  25   1
+ 29  30   1	0.109	284512 ; Actually is {Cs-H}, pulled from OPLS value for {HC-C}
+ 31  32   1	0.1455	533100 ; S - O stretch
+ 31  33   1	0.1455	533100 ; S - O stretch
+ 31  34   1	0.1455	533100 ; S - O stretch
+ 35  36   1
+ 35  37   1
+ 41  42   1
+ 41  43   1
+ 44  45   1
+ 46  47   1
+ 46  48   1
+ 49  50   1
+ 49  51   1
+ 49  52   1
+ 53  54   1
+ 53  55   1
+ 56  57   1
+ 56  58   1
+ 59  60   1
+ 59  61   1
+ 62  63   1
+ 62  64   1
+ 62  65   1
+  2   5   1
+  5   8   1
+  8  11   1
+ 11  14   1
+ 14  16   1
+ 14  23   1
+ 16  19   1
+ 29  31   1	0.1792	197000 ; Cs - S
+ 29  35   1 0.15290 224262.4 ; Actually is {Cs - C (not the carbonyl one)}, pulled from OPLS value for {CT - CT}
+ 41  44   1
+ 44  46   1
+ 44  53   1
+ 46  49   1
+ 53  56   1
+ 56  59   1
+ 59  62   1
+ 23  26   1
+ 40  41   1
+ 26  27   1
+ 38  40   1
+ 27  28   1
+ 38  39   1
+ 27  29   1 0.15220 265265.6 ; Actually is {Cs - C carbonyl}, pulled from OPLS value for {C_2 - CT}
+ 35  38   1
+
+[ angles ]
+  1   2   3   1
+  1   2   4   1
+  3   2   4   1
+  6   5   7   1
+  9   8  10   1
+ 12  11  13   1
+ 17  16  18   1
+ 20  19  21   1
+ 20  19  22   1
+ 21  19  22   1
+ 24  23  25   1
+ 32  31  33   1	114	969.0 ; O - S - O bend
+ 32  31  34   1	114 969.0 ; O - S - O bend
+ 33  31  34   1	114	969.0 ; O - S - O bend
+ 36  35  37   1
+ 42  41  43   1
+ 47  46  48   1
+ 50  49  51   1
+ 50  49  52   1
+ 51  49  52   1
+ 54  53  55   1
+ 57  56  58   1
+ 60  59  61   1
+ 63  62  64   1
+ 63  62  65   1
+ 64  62  65   1
+  1   2   5   1
+  3   2   5   1
+  4   2   5   1
+  2   5   6   1
+  2   5   7   1
+  6   5   8   1
+  7   5   8   1
+  5   8   9   1
+  5   8  10   1
+  9   8  11   1
+ 10   8  11   1
+  8  11  12   1
+  8  11  13   1
+ 12  11  14   1
+ 13  11  14   1
+ 11  14  15   1
+ 15  14  16   1
+ 15  14  23   1
+ 14  16  17   1
+ 14  16  18   1
+ 17  16  19   1
+ 18  16  19   1
+ 16  19  20   1
+ 16  19  21   1
+ 16  19  22   1
+ 14  23  24   1
+ 14  23  25   1
+ 30  29  31   1	107.3	390.3 ; H - Cs - S bend
+ 30  29  35   1 110.7   313.8 ; Actually is {H (s) - Cs - C carbonyl bend}, pulled from OPLS value for {CT-CT-HC}
+ 29  31  32   1	104.5	870.0 ; Cs - S - O bend
+ 29  31  33   1	104.5	870.0 ; Cs - S - O bend
+ 29  31  34   1	104.5	870.0 ; Cs - S - O bend
+ 29  35  36   1 110.7   313.8 ; Actually is {Cs - C (not carbonyl) - H (on the not carbonyl)}, pulled from OPLS value for {CT-CT-HC}
+ 29  35  37   1 110.7   313.8 ; Actually is {Cs - C (not carbonyl) - H (on the not carbonyl)}, pulled from OPLS value for {CT-CT-HC}
+ 42  41  44   1
+ 43  41  44   1
+ 41  44  45   1
+ 45  44  46   1
+ 45  44  53   1
+ 44  46  47   1
+ 44  46  48   1
+ 47  46  49   1
+ 48  46  49   1
+ 46  49  50   1
+ 46  49  51   1
+ 46  49  52   1
+ 44  53  54   1
+ 44  53  55   1
+ 54  53  56   1
+ 55  53  56   1
+ 53  56  57   1
+ 53  56  58   1
+ 57  56  59   1
+ 58  56  59   1
+ 56  59  60   1
+ 56  59  61   1
+ 60  59  62   1
+ 61  59  62   1
+ 59  62  63   1
+ 59  62  64   1
+ 59  62  65   1
+  2   5   8   1
+  5   8  11   1
+  8  11  14   1
+ 11  14  16   1
+ 11  14  23   1
+ 16  14  23   1
+ 14  16  19   1
+ 31  29  35   1	113.3	583.0 ; S - Cs - C bend
+ 41  44  46   1
+ 41  44  53   1
+ 46  44  53   1
+ 44  46  49   1
+ 44  53  56   1
+ 53  56  59   1
+ 56  59  62   1
+ 14  23  26   1
+ 40  41  44   1
+ 24  23  26   1
+ 25  23  26   1
+ 40  41  42   1
+ 40  41  43   1
+ 23  26  27   1
+ 38  40  41   1
+ 26  27  28   1
+ 39  38  40   1
+ 26  27  29   1 111.400 677.808 ; Actually is {O ester - C carbonyl - Cs}, pulled from OPLS value for {OS-C_2-CT}
+ 35  38  40   1
+ 28  27  29   1 120.400 669.440 ; Actually is {O carbonyl - C carbonyl - Cs}, pulled from OPLS value for {CT-C_2-O_2}
+ 35  38  39   1
+ 27  29  30   1 115.000 292.880 ; Actually is {C carbonyl - Cs - H (s)}, pulled from OPLS value for {CT-C_2-HC} 
+ 36  35  38   1
+ 37  35  38   1
+ 27  29  31   1	113.3	583.0 ; C - Cs - S bend
+ 27  29  35   1 111.100 527.184 ; Actually is {C carbonyl - Cs - C not carbonyl}, pulled from OPLS value for {C_2-CT-CT}
+ 29  35  38   1 111.100 527.184 ; Actually is {Cs - C not carbonyl - C carbonyl (the other one)}, pulled from OPLS value for {C_2-CT-CT}
+
+[ dihedrals ]
+  1   2   5   6   3
+  1   2   5   7   3
+  3   2   5   6   3
+  3   2   5   7   3
+  4   2   5   6   3
+  4   2   5   7   3
+  6   5   8   9   3
+  6   5   8  10   3
+  7   5   8   9   3
+  7   5   8  10   3
+  9   8  11  12   3
+  9   8  11  13   3
+ 10   8  11  12   3
+ 10   8  11  13   3
+ 12  11  14  15   3
+ 13  11  14  15   3
+ 15  14  16  17   3
+ 15  14  16  18   3
+ 15  14  23  24   3
+ 15  14  23  25   3
+ 17  16  19  20   3
+ 17  16  19  21   3
+ 17  16  19  22   3
+ 18  16  19  20   3
+ 18  16  19  21   3
+ 18  16  19  22   3
+ 30  29  31  32   5	0.0	0.0	1.625 0.0 ; H - Cs - S - O (Fourier) dihedral
+ 30  29  31  33   5	0.0	0.0	1.625 0.0 ; H - Cs - S - O (Fourier) dihedral
+ 30  29  31  34   5	0.0	0.0	1.625 0.0 ; H - Cs - S - O (Fourier) dihedral
+ 30  29  35  36   3 0.62760 1.88280 0.00000 -2.51040 0.00000 0.00000 ; Actually is {H(s) - Cs - C - H}, pulled from OPLS value for {HC-CT-CT-HC}
+ 30  29  35  37   3 0.62760 1.88280 0.00000 -2.51040 0.00000 0.00000 ; Actually is {H(s) - Cs - C - H}, pulled from OPLS value for {HC-CT-CT-HC}
+ 42  41  44  45   3
+ 43  41  44  45   3
+ 45  44  46  47   3
+ 45  44  46  48   3
+ 45  44  53  54   3
+ 45  44  53  55   3
+ 47  46  49  50   3
+ 47  46  49  51   3
+ 47  46  49  52   3
+ 48  46  49  50   3
+ 48  46  49  51   3
+ 48  46  49  52   3
+ 54  53  56  57   3
+ 54  53  56  58   3
+ 55  53  56  57   3
+ 55  53  56  58   3
+ 57  56  59  60   3
+ 57  56  59  61   3
+ 58  56  59  60   3
+ 58  56  59  61   3
+ 60  59  62  63   3
+ 60  59  62  64   3
+ 60  59  62  65   3
+ 61  59  62  63   3
+ 61  59  62  64   3
+ 61  59  62  65   3
+  1   2   5   8   3
+  3   2   5   8   3
+  4   2   5   8   3
+  2   5   8   9   3
+  2   5   8  10   3
+  6   5   8  11   3
+  7   5   8  11   3
+  5   8  11  12   3
+  5   8  11  13   3
+  9   8  11  14   3
+ 10   8  11  14   3
+  8  11  14  15   3
+ 12  11  14  16   3
+ 12  11  14  23   3
+ 13  11  14  16   3
+ 13  11  14  23   3
+ 11  14  16  17   3
+ 11  14  16  18   3
+ 15  14  16  19   3
+ 23  14  16  17   3
+ 23  14  16  18   3
+ 11  14  23  24   3
+ 11  14  23  25   3
+ 16  14  23  24   3
+ 16  14  23  25   3
+ 14  16  19  20   3
+ 14  16  19  21   3
+ 14  16  19  22   3
+ 35  29  31  32   5	0.0	0.0	1.3938	0.0 ; C - Cs - S - O (Fourier) dihedral
+ 35  29  31  33   5	0.0	0.0	1.3938	0.0 ; C - Cs - S - O (Fourier) dihedral
+ 35  29  31  34   5	0.0	0.0	1.3938	0.0 ; C - Cs - S - O (Fourier) dihedral
+ 31  29  35  36   5	0.0	0.0	1.3797	0.0 ; S - Cs - C - H (Fourier) dihedral
+ 31  29  35  37   5	0.0	0.0	1.3797	0.0 ; S - Cs - C - H (Fourier) dihedral
+ 42  41  44  46   3
+ 42  41  44  53   3
+ 43  41  44  46   3
+ 43  41  44  53   3
+ 41  44  46  47   3
+ 41  44  46  48   3
+ 45  44  46  49   3
+ 53  44  46  47   3
+ 53  44  46  48   3
+ 41  44  53  54   3
+ 41  44  53  55   3
+ 45  44  53  56   3
+ 46  44  53  54   3
+ 46  44  53  55   3
+ 44  46  49  50   3
+ 44  46  49  51   3
+ 44  46  49  52   3
+ 44  53  56  57   3
+ 44  53  56  58   3
+ 54  53  56  59   3
+ 55  53  56  59   3
+ 53  56  59  60   3
+ 53  56  59  61   3
+ 57  56  59  62   3
+ 58  56  59  62   3
+ 56  59  62  63   3
+ 56  59  62  64   3
+ 56  59  62  65   3
+  2   5   8  11   3
+  5   8  11  14   3
+  8  11  14  16   3
+  8  11  14  23   3
+ 11  14  16  19   3
+ 23  14  16  19   3
+ 41  44  46  49   3
+ 53  44  46  49   3
+ 41  44  53  56   3
+ 46  44  53  56   3
+ 44  53  56  59   3
+ 53  56  59  62   3
+ 11  14  23  26   3
+ 16  14  23  26   3
+ 40  41  44  46   3
+ 40  41  44  53   3
+ 15  14  23  26   3
+ 40  41  44  45   3
+ 14  23  26  27   3
+ 38  40  41  44   3
+ 24  23  26  27   3
+ 25  23  26  27   3
+ 38  40  41  42   3
+ 38  40  41  43   3
+ 23  26  27  28   3
+ 39  38  40  41   3
+ 23  26  27  29   3 2.87441 0.58158 2.09200 -5.54799 0.00000 0.00000 ; Actually is {C methoxy - O methoxy - C carbonyl - Cs}, pulled from OPLS value for {CT-CT-CT-OS}
+ 35  38  40  41   3
+ 26  27  29  30   3 0.97905 2.93716 0.00000 -3.91622 0.00000 0.00000 ; Actually is {O methoxy - C carbonyl - Cs - H(s)}, pulled from OPLS value for {HC-CT-CT-OS}
+ 36  35  38  40   3
+ 37  35  38  40   3
+ 26  27  29  31   5	-16.1	-2.0046	0.7674	0.0 ; O ester - C carbonyl - Cs - S dihedral
+ 26  27  29  35   3 -1.15688 -3.47063 0.00000 4.62750 0.00000 0.00000 ; Actually is {O methoxy - C carbonyl - Cs - C}, pulled from OPLS value for {CT-CT-C_2-OS} 
+ 29  35  38  40   3 -1.15688 -3.47063 0.00000 4.62750 0.00000 0.00000 ; Actually is {Cs - C - C carbonyl - O methoxy}, pulled from OPLS value for {CT-CT-C_2-OS}
+ 28  27  29  30   3 0.00000 0.00000 0.00000 0.00000 0.00000 0.0000 ; Actually is {O carbonyl - C carbonyl - Cs - H(s)}, pulled from OPLS value for {HC-CT-C_2-O_2}
+ 36  35  38  39   3
+ 37  35  38  39   3
+;28  27  29  31   3 ; O carbonyl - C carbonyl - Cs - S
+ 28  27  29  35   3 3.10662 -3.77606 -5.13795 5.80739 0.00000 0.00000 ; Actually is {O carbonyl - C carbonyl - Cs - C}, pulled from OPLS value for {CT-CT-C_2-O_2}
+ 29  35  38  39   3 3.10662 -3.77606 -5.13795 5.80739 0.00000 0.00000 ; Actually is {Cs - C - C carbonyl - O carbonyl}, pulled from OPLS value for {CT-CT-C_2-O_2}
+ 27  29  31  32   5	0.0	0.0	1.3938	0.0 ; C - Cs - S - O (Fourier) dihedral
+ 27  29  31  33   5	0.0	0.0	1.3938	0.0 ; C - Cs - S - O (Fourier) dihedral
+ 27  29  31  34   5	0.0	0.0	1.3938	0.0 ; C - Cs - S - O (Fourier) dihedral
+ 27  29  35  36   3 -0.15899 -0.47698 0.00000 0.63596 0.00000 0.00000 ; Actually is {C carbonyl - Cs - C - H}, pulled from OPLS value for {C_2-CT-CT-HC}
+ 27  29  35  37   3 -0.15899 -0.47698 0.00000 0.63596 0.00000 0.00000 ; Actually is {C carbonyl - Cs - C - H}, pulled from OPLS value for {C_2-CT-CT-HC}
+ 30  29  35  38   3 -0.15899 -0.47698 0.00000 0.63596 0.00000 0.00000 ; Actually is {H(s) - Cs - C - C carbonyl}, pulled from OPLS value for {C_2-CT-CT-HC}
+ 27  29  35  38   3	2.92880 -1.46440 0.20920 -1.67360 0.00000 0.00000 ; Actually is {C carbonyl-Cs-C-C carbonyl dihedral}, taken from OPLS-aa as {CO-CT-CT-CT}
+;31  29  35  38   3 ; S - Cs - C - C carbonyl
+
+[ dihedrals ]
+ 26  29  27  28  improper_O_C_X_Y
+ 35  40  38  39  improper_O_C_X_Y
+
+[ pairs ]
+;
+  1   6  1
+  1   7  1
+  1   8  1
+  3   6  1
+  3   7  1
+  3   8  1
+  4   6  1
+  4   7  1
+  4   8  1
+  2   9  1
+  2  10  1
+  2  11  1
+  6   9  1
+  6  10  1
+  6  11  1
+  7   9  1
+  7  10  1
+  7  11  1
+  5  12  1
+  5  13  1
+  5  14  1
+  9  12  1
+  9  13  1
+  9  14  1
+ 10  12  1
+ 10  13  1
+ 10  14  1
+  8  15  1
+  8  16  1
+  8  23  1
+ 12  15  1
+ 12  16  1
+ 12  23  1
+ 13  15  1
+ 13  16  1
+ 13  23  1
+ 11  17  1
+ 11  18  1
+ 11  19  1
+ 15  17  1
+ 15  18  1
+ 15  19  1
+ 23  17  1
+ 23  18  1
+ 23  19  1
+ 11  24  1
+ 11  25  1
+ 11  26  1
+ 15  24  1
+ 15  25  1
+ 15  26  1
+ 16  24  1
+ 16  25  1
+ 16  26  1
+ 14  20  1
+ 14  21  1
+ 14  22  1
+ 17  20  1
+ 17  21  1
+ 17  22  1
+ 18  20  1
+ 18  21  1
+ 18  22  1
+ 14  27  1
+ 24  27  1
+ 25  27  1
+ 23  28  1
+ 23  29  1
+ 26  30  1
+ 26  31  1
+ 26  35  1
+ 28  30  1
+ 28  31  1
+ 28  35  1
+ 27  32  1
+ 27  33  1
+ 27  34  1
+ 30  32  1
+ 30  33  1
+ 30  34  1
+ 35  32  1
+ 35  33  1
+ 35  34  1
+ 27  36  1
+ 27  37  1
+ 27  38  1
+ 30  36  1
+ 30  37  1
+ 30  38  1
+ 31  36  1
+ 31  37  1
+ 31  38  1
+ 29  39  1
+ 29  40  1
+ 36  39  1
+ 36  40  1
+ 37  39  1
+ 37  40  1
+ 35  41  1
+ 39  41  1
+ 38  42  1
+ 38  43  1
+ 38  44  1
+ 40  45  1
+ 40  46  1
+ 40  53  1
+ 42  45  1
+ 42  46  1
+ 42  53  1
+ 43  45  1
+ 43  46  1
+ 43  53  1
+ 41  47  1
+ 41  48  1
+ 41  49  1
+ 45  47  1
+ 45  48  1
+ 45  49  1
+ 53  47  1
+ 53  48  1
+ 53  49  1
+ 41  54  1
+ 41  55  1
+ 41  56  1
+ 45  54  1
+ 45  55  1
+ 45  56  1
+ 46  54  1
+ 46  55  1
+ 46  56  1
+ 44  50  1
+ 44  51  1
+ 44  52  1
+ 47  50  1
+ 47  51  1
+ 47  52  1
+ 48  50  1
+ 48  51  1
+ 48  52  1
+ 44  57  1
+ 44  58  1
+ 44  59  1
+ 54  57  1
+ 54  58  1
+ 54  59  1
+ 55  57  1
+ 55  58  1
+ 55  59  1
+ 53  60  1
+ 53  61  1
+ 53  62  1
+ 57  60  1
+ 57  61  1
+ 57  62  1
+ 58  60  1
+ 58  61  1
+ 58  62  1
+ 56  63  1
+ 56  64  1
+ 56  65  1
+ 60  63  1
+ 60  64  1
+ 60  65  1
+ 61  63  1
+ 61  64  1
+ 61  65  1
